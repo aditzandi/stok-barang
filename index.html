@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Stok Barang</title>
+<title>Stok & Penjualan</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -30,22 +30,19 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 32px;
+    padding-bottom: 90px;
   }
 
   .topbar {
     background: var(--accent);
     padding: 20px 20px 28px;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
 
   .topbar::after {
-    content: '';
-    position: absolute;
+    content: ''; position: absolute;
     bottom: -20px; left: 0; right: 0;
-    height: 40px;
-    background: var(--bg);
+    height: 40px; background: var(--bg);
     border-radius: 24px 24px 0 0;
   }
 
@@ -53,13 +50,8 @@
   .topbar p { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; }
 
   .sync-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.85);
-    font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 600;
   }
 
   .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #a5f3c0; }
@@ -67,27 +59,44 @@
   .sync-dot.error { background: #fca5a5; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--white); border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr;
+    z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 8px 16px; border: none; background: transparent;
+    cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--muted); font-size: 11px; font-weight: 600;
+    transition: color 0.2s; gap: 4px;
+  }
+
+  .nav-btn .nav-icon { font-size: 22px; }
+  .nav-btn.active { color: var(--accent); }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* SUMMARY */
   .summary {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 0 16px;
-    margin-top: -4px;
-    position: relative;
-    z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; padding: 0 16px;
+    margin-top: -4px; position: relative; z-index: 1;
   }
 
   .sum-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 14px 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    background: var(--white); border-radius: 16px;
+    padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
 
   .sum-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .sum-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
   .sum-val.green { color: var(--green); }
   .sum-val.accent { color: var(--accent); }
+  .sum-val.orange { color: var(--orange); }
 
   .section-title {
     font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -97,12 +106,9 @@
   .items { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
 
   .item-card {
-    background: var(--white);
-    border-radius: 20px;
-    padding: 18px;
+    background: var(--white); border-radius: 20px; padding: 18px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 2px solid transparent;
-    transition: border-color 0.2s;
+    border: 2px solid transparent; transition: border-color 0.2s;
   }
 
   .item-card:focus-within { border-color: var(--accent); }
@@ -111,8 +117,7 @@
   .item-name-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
 
   .item-num {
-    width: 28px; height: 28px;
-    background: var(--accent-light); color: var(--accent);
+    width: 28px; height: 28px; background: var(--accent-light); color: var(--accent);
     border-radius: 8px; font-size: 13px; font-weight: 800;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
@@ -135,17 +140,13 @@
   }
 
   .inp-wrap {
-    display: flex; align-items: center;
-    background: var(--bg); border-radius: 12px;
-    border: 1.5px solid var(--border); overflow: hidden; transition: border-color 0.2s;
+    display: flex; align-items: center; background: var(--bg);
+    border-radius: 12px; border: 1.5px solid var(--border); overflow: hidden; transition: border-color 0.2s;
   }
 
   .inp-wrap:focus-within { border-color: var(--accent); background: var(--accent-light); }
 
-  .inp-prefix {
-    padding: 0 8px 0 12px; font-size: 13px; font-weight: 600;
-    color: var(--muted); user-select: none;
-  }
+  .inp-prefix { padding: 0 8px 0 12px; font-size: 13px; font-weight: 600; color: var(--muted); user-select: none; }
 
   .inp-wrap input {
     border: none; outline: none; background: transparent;
@@ -159,8 +160,7 @@
 
   .stok-wrap {
     display: flex; align-items: center; background: var(--bg);
-    border-radius: 12px; border: 1.5px solid var(--border);
-    overflow: hidden; transition: border-color 0.2s;
+    border-radius: 12px; border: 1.5px solid var(--border); overflow: hidden; transition: border-color 0.2s;
   }
 
   .stok-wrap:focus-within { border-color: var(--accent); }
@@ -205,11 +205,88 @@
 
   .btn-save:active { transform: scale(0.98); }
   .btn-save:disabled { opacity: 0.6; }
-
   .last-saved { text-align: center; font-size: 12px; color: var(--muted); font-weight: 500; }
 
+  /* PENJUALAN */
+  .jual-summary {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; padding: 0 16px;
+    margin-top: -4px; position: relative; z-index: 1;
+  }
+
+  .jual-sum-card {
+    background: var(--white); border-radius: 14px;
+    padding: 12px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center;
+  }
+
+  .jual-sum-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .jual-sum-val { font-size: 16px; font-weight: 800; margin-top: 3px; }
+
+  .barang-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .barang-row {
+    background: var(--white); border-radius: 16px; padding: 14px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .barang-info { flex: 1; }
+  .barang-nama { font-size: 14px; font-weight: 700; }
+  .barang-harga { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+  .barang-sisa { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .jual-counter {
+    display: flex; align-items: center;
+    background: var(--bg); border-radius: 12px;
+    border: 1.5px solid var(--border); overflow: hidden;
+  }
+
+  .jual-btn {
+    background: transparent; border: none;
+    padding: 8px 12px; font-size: 18px; font-weight: 700;
+    color: var(--sub); cursor: pointer; line-height: 1; user-select: none;
+  }
+
+  .jual-btn:active { background: var(--border); }
+
+  .jual-qty { min-width: 36px; text-align: center; font-size: 16px; font-weight: 800; }
+
+  .btn-catat {
+    width: calc(100% - 32px); margin: 16px 16px 0;
+    background: var(--green); color: #fff; border: none;
+    border-radius: 16px; padding: 16px; font-size: 16px; font-weight: 800;
+    font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(16,185,129,0.35); transition: transform 0.1s;
+  }
+
+  .btn-catat:active { transform: scale(0.98); }
+
+  .riwayat-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+
+  .riwayat-item {
+    background: var(--white); border-radius: 14px; padding: 12px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .riwayat-nama { font-size: 14px; font-weight: 700; }
+  .riwayat-waktu { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .riwayat-qty { font-size: 13px; font-weight: 700; color: var(--red); text-align: right; }
+  .riwayat-total { font-size: 12px; color: var(--green); font-weight: 700; margin-top: 2px; text-align: right; }
+
+  .empty-riwayat { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
+  .empty-riwayat .icon { font-size: 36px; margin-bottom: 8px; }
+
+  .btn-reset {
+    margin: 12px 16px 0; width: calc(100% - 32px);
+    background: transparent; color: var(--red);
+    border: 1.5px solid var(--red-light); border-radius: 12px;
+    padding: 12px; font-size: 13px; font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
+  }
+
   .toast {
-    position: fixed; bottom: 24px;
+    position: fixed; bottom: 80px;
     left: 50%; transform: translateX(-50%) translateY(80px);
     color: #fff; padding: 12px 22px; border-radius: 99px;
     font-size: 13px; font-weight: 600;
@@ -221,36 +298,73 @@
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   .toast.success { background: #065f46; }
   .toast.error { background: #7f1d1d; }
+  .toast.warn { background: #78350f; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <h1>📦 Stok Barang</h1>
-  <p>Tersinkron dengan cloud</p>
+  <h1 id="topTitle">📦 Stok Barang</h1>
+  <p id="topSub">Input harga &amp; stok</p>
   <div class="sync-status">
     <div class="sync-dot loading" id="syncDot"></div>
     <span id="syncText">Memuat data...</span>
   </div>
 </div>
 
-<div class="summary">
-  <div class="sum-card">
-    <div class="sum-label">Total Stok</div>
-    <div class="sum-val accent" id="sumStok">—</div>
+<!-- PAGE STOK -->
+<div class="page active" id="pageStok">
+  <div class="summary">
+    <div class="sum-card">
+      <div class="sum-label">Total Stok</div>
+      <div class="sum-val accent" id="sumStok">—</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Nilai Stok</div>
+      <div class="sum-val green" id="sumNilai">—</div>
+    </div>
   </div>
-  <div class="sum-card">
-    <div class="sum-label">Nilai Total</div>
-    <div class="sum-val green" id="sumNilai">—</div>
+  <div class="section-title">Daftar Barang</div>
+  <div class="items" id="itemList"></div>
+  <div class="save-wrap">
+    <button class="btn-save" id="btnSave" onclick="simpan()" disabled>💾 Simpan</button>
+    <div class="last-saved" id="lastSaved"></div>
   </div>
 </div>
 
-<div class="section-title">Daftar Barang</div>
-<div class="items" id="itemList"></div>
+<!-- PAGE PENJUALAN -->
+<div class="page" id="pageJual">
+  <div class="jual-summary">
+    <div class="jual-sum-card">
+      <div class="jual-sum-label">Terjual</div>
+      <div class="jual-sum-val accent" id="jualTotal">0</div>
+    </div>
+    <div class="jual-sum-card">
+      <div class="jual-sum-label">Omzet</div>
+      <div class="jual-sum-val green" id="jualOmzet">Rp0</div>
+    </div>
+    <div class="jual-sum-card">
+      <div class="jual-sum-label">Transaksi</div>
+      <div class="jual-sum-val orange" id="jualTrx">0</div>
+    </div>
+  </div>
+  <div class="section-title">Pilih Barang</div>
+  <div class="barang-list" id="barangList"></div>
+  <button class="btn-catat" onclick="catatPenjualan()">✅ Catat Penjualan</button>
+  <div class="section-title" style="margin-top:8px">Riwayat Hari Ini</div>
+  <div class="riwayat-list" id="riwayatList"></div>
+  <div id="emptyRiwayat" class="empty-riwayat"><div class="icon">🧾</div><p>Belum ada transaksi</p></div>
+  <button class="btn-reset" id="btnReset" onclick="resetRiwayat()" style="display:none">🗑️ Hapus Riwayat Hari Ini</button>
+</div>
 
-<div class="save-wrap">
-  <button class="btn-save" id="btnSave" onclick="simpan()" disabled>💾 Simpan</button>
-  <div class="last-saved" id="lastSaved"></div>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="navStok" onclick="showPage('stok')">
+    <span class="nav-icon">📦</span><span>Stok</span>
+  </button>
+  <button class="nav-btn" id="navJual" onclick="showPage('jual')">
+    <span class="nav-icon">🛒</span><span>Penjualan</span>
+  </button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -259,123 +373,119 @@
   const BIN_ID = '69cfabec856a682189f73bed';
   const MASTER_KEY = '$2a$10$1oYDHBq/NG4lryEQR0tmPeICB9AUm1hcmwh8GyAL1OGEcZmTJBCv6';
   const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
-  const DEFAULTS = [
-    'Beras 5kg', 'Minyak Goreng', 'Gula Pasir', 'Tepung Terigu', 'Kopi Sachet'
-  ];
+  const DEFAULTS = ['Beras 5kg','Minyak Goreng','Gula Pasir','Tepung Terigu','Kopi Sachet'];
 
   let data = [];
+  let jualQty = [];
+
+  // Riwayat - reset tiap hari baru
+  const hariIni = new Date().toDateString();
+  if (localStorage.getItem('riwayat_tgl') !== hariIni) {
+    localStorage.setItem('riwayat_jual', '[]');
+    localStorage.setItem('riwayat_tgl', hariIni);
+  }
+  let riwayat = JSON.parse(localStorage.getItem('riwayat_jual') || '[]');
+
+  function showPage(p) {
+    document.getElementById('pageStok').classList.toggle('active', p==='stok');
+    document.getElementById('pageJual').classList.toggle('active', p==='jual');
+    document.getElementById('navStok').classList.toggle('active', p==='stok');
+    document.getElementById('navJual').classList.toggle('active', p==='jual');
+    document.getElementById('topTitle').textContent = p==='stok' ? '📦 Stok Barang' : '🛒 Penjualan';
+    document.getElementById('topSub').textContent = p==='stok' ? 'Input harga & stok' : 'Catat transaksi harian';
+    if (p==='jual') renderJual();
+  }
 
   function fmtRp(n) {
-    if (n >= 1000000) return 'Rp' + (n/1000000).toFixed(1).replace('.0','') + 'jt';
-    if (n >= 1000) return 'Rp' + (n/1000).toFixed(0) + 'rb';
-    return 'Rp' + n;
+    if (n>=1000000) return 'Rp'+(n/1000000).toFixed(1).replace('.0','')+'jt';
+    if (n>=1000) return 'Rp'+(n/1000).toFixed(0)+'rb';
+    return 'Rp'+n;
   }
 
-  function fmtRpFull(n) {
-    return 'Rp' + Number(n).toLocaleString('id-ID');
-  }
+  function fmtRpFull(n) { return 'Rp'+Number(n).toLocaleString('id-ID'); }
 
-  function statusInfo(stok) {
-    if (stok === 0) return { label: '❌ Habis', cls: 'badge-red', dot: '#ef4444' };
-    if (stok <= 5) return { label: '⚠️ Rendah', cls: 'badge-orange', dot: '#f59e0b' };
-    return { label: '✅ Aman', cls: 'badge-green', dot: '#10b981' };
+  function statusInfo(s) {
+    if (s===0) return {label:'❌ Habis',cls:'badge-red',dot:'#ef4444'};
+    if (s<=5) return {label:'⚠️ Rendah',cls:'badge-orange',dot:'#f59e0b'};
+    return {label:'✅ Aman',cls:'badge-green',dot:'#10b981'};
   }
 
   function setSyncStatus(state, text) {
-    const dot = document.getElementById('syncDot');
-    const txt = document.getElementById('syncText');
-    dot.className = 'sync-dot' + (state === 'loading' ? ' loading' : state === 'error' ? ' error' : '');
-    txt.textContent = text;
+    document.getElementById('syncDot').className = 'sync-dot'+(state==='loading'?' loading':state==='error'?' error':'');
+    document.getElementById('syncText').textContent = text;
   }
 
   async function loadData() {
-    setSyncStatus('loading', 'Memuat data...');
+    setSyncStatus('loading','Memuat data...');
     try {
-      const res = await fetch(API_URL + '/latest', {
-        headers: { 'X-Master-Key': MASTER_KEY }
-      });
-      if (!res.ok) throw new Error('Gagal');
+      const res = await fetch(API_URL+'/latest', { headers:{'X-Master-Key':MASTER_KEY} });
+      if (!res.ok) throw new Error();
       const json = await res.json();
-      const record = json.record;
-
-      if (record.items && record.items.length > 0) {
-        data = record.items;
-      } else {
-        data = DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
-      }
-
-      if (record.lastSaved) {
-        document.getElementById('lastSaved').textContent =
-          'Terakhir disimpan: ' + new Date(record.lastSaved).toLocaleString('id-ID');
-      }
-
-      setSyncStatus('ok', 'Tersinkron ✓');
+      const r = json.record;
+      data = (r.items && r.items.length>0) ? r.items : DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
+      if (r.lastSaved) document.getElementById('lastSaved').textContent = 'Terakhir disimpan: '+new Date(r.lastSaved).toLocaleString('id-ID');
+      setSyncStatus('ok','Tersinkron ✓');
       document.getElementById('btnSave').disabled = false;
-      render();
-    } catch (e) {
-      setSyncStatus('error', 'Gagal memuat, pakai data lokal');
-      const local = localStorage.getItem('stokku_jsonbin');
-      if (local) {
-        data = JSON.parse(local).items || DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
-      } else {
-        data = DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
-      }
+    } catch(e) {
+      setSyncStatus('error','Pakai data lokal');
+      const loc = localStorage.getItem('stokku_jsonbin');
+      data = loc ? (JSON.parse(loc).items || DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}))) : DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
       document.getElementById('btnSave').disabled = false;
-      render();
     }
+    jualQty = data.map(()=>0);
+    render();
   }
 
   async function simpan() {
     const btn = document.getElementById('btnSave');
-    btn.disabled = true;
-    btn.textContent = '⏳ Menyimpan...';
-    setSyncStatus('loading', 'Menyimpan...');
-
-    const payload = { items: data, lastSaved: new Date().toISOString() };
+    btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
+    setSyncStatus('loading','Menyimpan...');
+    const payload = {items:data, lastSaved:new Date().toISOString()};
     localStorage.setItem('stokku_jsonbin', JSON.stringify(payload));
-
     try {
       const res = await fetch(API_URL, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': MASTER_KEY
-        },
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
         body: JSON.stringify(payload)
       });
-
-      if (!res.ok) throw new Error('Gagal');
-
-      setSyncStatus('ok', 'Tersinkron ✓');
-      document.getElementById('lastSaved').textContent =
-        'Terakhir disimpan: ' + new Date().toLocaleString('id-ID');
-      showToast('✅ Berhasil disimpan!', 'success');
-    } catch (e) {
-      setSyncStatus('error', 'Gagal simpan ke cloud');
-      showToast('⚠️ Gagal ke cloud, tersimpan lokal', 'error');
+      if (!res.ok) throw new Error();
+      setSyncStatus('ok','Tersinkron ✓');
+      document.getElementById('lastSaved').textContent = 'Terakhir disimpan: '+new Date().toLocaleString('id-ID');
+      showToast('✅ Berhasil disimpan!','success');
+    } catch(e) {
+      setSyncStatus('error','Gagal simpan');
+      showToast('⚠️ Tersimpan lokal saja','error');
     }
-
-    btn.disabled = false;
-    btn.textContent = '💾 Simpan';
+    btn.disabled = false; btn.textContent = '💾 Simpan';
   }
 
+  async function simpanSilent() {
+    const payload = {items:data, lastSaved:new Date().toISOString()};
+    localStorage.setItem('stokku_jsonbin', JSON.stringify(payload));
+    try {
+      await fetch(API_URL, {
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
+        body: JSON.stringify(payload)
+      });
+      setSyncStatus('ok','Tersinkron ✓');
+    } catch(e) { setSyncStatus('error','Gagal sinkron'); }
+  }
+
+  // ===== STOK =====
   function render() {
     const list = document.getElementById('itemList');
     list.innerHTML = '';
-
-    data.forEach((item, i) => {
+    data.forEach((item,i) => {
       const s = statusInfo(item.stok);
-      const nilai = item.harga * item.stok;
       const card = document.createElement('div');
       card.className = 'item-card';
       card.innerHTML = `
         <div class="item-header">
           <div class="item-name-wrap">
             <div class="item-num">${i+1}</div>
-            <input class="item-name" type="text" value="${escHtml(item.nama)}"
-              placeholder="Nama barang..."
-              oninput="data[${i}].nama=this.value; updateSummary()">
+            <input class="item-name" type="text" value="${esc(item.nama)}" placeholder="Nama barang..."
+              oninput="data[${i}].nama=this.value;updateSummary()">
           </div>
           <div class="status-dot" id="dot${i}" style="background:${s.dot}"></div>
         </div>
@@ -384,71 +494,145 @@
             <div class="inp-label">Harga Jual</div>
             <div class="inp-wrap">
               <span class="inp-prefix">Rp</span>
-              <input type="number" inputmode="numeric" placeholder="0"
-                value="${item.harga || ''}"
-                oninput="data[${i}].harga=parseFloat(this.value)||0; updateCard(${i})">
+              <input type="number" inputmode="numeric" placeholder="0" value="${item.harga||''}"
+                oninput="data[${i}].harga=parseFloat(this.value)||0;updateCard(${i})">
             </div>
           </div>
           <div class="inp-group">
             <div class="inp-label">Stok</div>
             <div class="stok-wrap">
-              <button class="stok-btn" onclick="changeStok(${i},-1)">−</button>
-              <input type="number" inputmode="numeric" placeholder="0" id="stokInp${i}"
-                value="${item.stok || ''}"
-                oninput="data[${i}].stok=parseInt(this.value)||0; updateCard(${i})">
-              <button class="stok-btn" onclick="changeStok(${i},1)">＋</button>
+              <button class="stok-btn" onclick="chgStok(${i},-1)">−</button>
+              <input type="number" inputmode="numeric" placeholder="0" id="si${i}" value="${item.stok||''}"
+                oninput="data[${i}].stok=parseInt(this.value)||0;updateCard(${i})">
+              <button class="stok-btn" onclick="chgStok(${i},1)">＋</button>
             </div>
           </div>
         </div>
         <div class="item-footer">
           <span class="badge ${s.cls}" id="badge${i}">${s.label}</span>
-          <span class="nilai-barang">Nilai: <span id="nilai${i}">${fmtRp(nilai)}</span></span>
-        </div>
-      `;
+          <span class="nilai-barang">Nilai: <span id="nilai${i}">${fmtRp(item.harga*item.stok)}</span></span>
+        </div>`;
       list.appendChild(card);
     });
-
     updateSummary();
   }
 
   function updateCard(i) {
-    const item = data[i];
-    const s = statusInfo(item.stok);
-    const nilai = item.harga * item.stok;
-    const badge = document.getElementById('badge'+i);
-    const dot = document.getElementById('dot'+i);
-    const nilaiEl = document.getElementById('nilai'+i);
-    if (badge) { badge.textContent = s.label; badge.className = 'badge ' + s.cls; }
-    if (dot) dot.style.background = s.dot;
-    if (nilaiEl) nilaiEl.textContent = fmtRp(nilai);
+    const item = data[i], s = statusInfo(item.stok);
+    const b = document.getElementById('badge'+i);
+    const d = document.getElementById('dot'+i);
+    const n = document.getElementById('nilai'+i);
+    if (b) { b.textContent=s.label; b.className='badge '+s.cls; }
+    if (d) d.style.background=s.dot;
+    if (n) n.textContent=fmtRp(item.harga*item.stok);
     updateSummary();
   }
 
-  function changeStok(i, delta) {
-    data[i].stok = Math.max(0, (data[i].stok || 0) + delta);
-    const inp = document.getElementById('stokInp'+i);
-    if (inp) inp.value = data[i].stok || '';
+  function chgStok(i,delta) {
+    data[i].stok = Math.max(0,(data[i].stok||0)+delta);
+    const inp = document.getElementById('si'+i);
+    if (inp) inp.value = data[i].stok||'';
     updateCard(i);
   }
 
   function updateSummary() {
-    const totalStok = data.reduce((s,b) => s + (b.stok||0), 0);
-    const totalNilai = data.reduce((s,b) => s + (b.harga||0)*(b.stok||0), 0);
-    document.getElementById('sumStok').textContent = totalStok;
-    document.getElementById('sumNilai').textContent = fmtRpFull(totalNilai);
+    document.getElementById('sumStok').textContent = data.reduce((s,b)=>s+(b.stok||0),0);
+    document.getElementById('sumNilai').textContent = fmtRpFull(data.reduce((s,b)=>s+(b.harga||0)*(b.stok||0),0));
   }
 
-  function escHtml(s) {
-    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  // ===== PENJUALAN =====
+  function renderJual() {
+    const list = document.getElementById('barangList');
+    list.innerHTML = '';
+    data.forEach((item,i) => {
+      const habis = item.stok === 0;
+      const row = document.createElement('div');
+      row.className = 'barang-row';
+      row.style.opacity = habis ? '0.5' : '1';
+      row.innerHTML = `
+        <div class="barang-info">
+          <div class="barang-nama">${esc(item.nama)}</div>
+          <div class="barang-harga">${fmtRp(item.harga)}</div>
+          <div class="barang-sisa">Sisa stok: <b id="sisa${i}">${item.stok}</b></div>
+        </div>
+        <div class="jual-counter">
+          <button class="jual-btn" onclick="chgJual(${i},-1)" ${habis?'disabled':''}>−</button>
+          <div class="jual-qty" id="jq${i}">${jualQty[i]||0}</div>
+          <button class="jual-btn" onclick="chgJual(${i},1)" ${habis?'disabled':''}>＋</button>
+        </div>`;
+      list.appendChild(row);
+    });
+    renderRiwayat();
   }
+
+  function chgJual(i,delta) {
+    jualQty[i] = Math.max(0, Math.min(data[i].stok, (jualQty[i]||0)+delta));
+    const el = document.getElementById('jq'+i);
+    if (el) el.textContent = jualQty[i];
+  }
+
+  function catatPenjualan() {
+    if (!jualQty.some(q=>q>0)) { showToast('⚠️ Pilih barang dulu!','warn'); return; }
+    const waktu = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    jualQty.forEach((qty,i) => {
+      if (qty>0) {
+        data[i].stok = Math.max(0, data[i].stok - qty);
+        riwayat.unshift({ nama:data[i].nama, qty, harga:data[i].harga, total:qty*data[i].harga, waktu });
+      }
+    });
+    jualQty = data.map(()=>0);
+    localStorage.setItem('riwayat_jual', JSON.stringify(riwayat));
+    simpanSilent();
+    renderJual();
+    updateSummary();
+    showToast('✅ Penjualan dicatat!','success');
+  }
+
+  function renderRiwayat() {
+    const list = document.getElementById('riwayatList');
+    const empty = document.getElementById('emptyRiwayat');
+    const btn = document.getElementById('btnReset');
+    list.innerHTML = '';
+    const totalTerjual = riwayat.reduce((s,r)=>s+r.qty,0);
+    const totalOmzet = riwayat.reduce((s,r)=>s+r.total,0);
+    document.getElementById('jualTotal').textContent = totalTerjual;
+    document.getElementById('jualOmzet').textContent = fmtRp(totalOmzet);
+    document.getElementById('jualTrx').textContent = riwayat.length;
+    if (riwayat.length===0) { empty.style.display='block'; btn.style.display='none'; return; }
+    empty.style.display='none'; btn.style.display='block';
+    riwayat.forEach(r => {
+      const div = document.createElement('div');
+      div.className = 'riwayat-item';
+      div.innerHTML = `
+        <div>
+          <div class="riwayat-nama">${esc(r.nama)}</div>
+          <div class="riwayat-waktu">🕐 ${r.waktu}</div>
+        </div>
+        <div>
+          <div class="riwayat-qty">−${r.qty} pcs</div>
+          <div class="riwayat-total">+${fmtRp(r.total)}</div>
+        </div>`;
+      list.appendChild(div);
+    });
+  }
+
+  function resetRiwayat() {
+    if (!confirm('Hapus semua riwayat hari ini?')) return;
+    riwayat = [];
+    localStorage.setItem('riwayat_jual','[]');
+    renderRiwayat();
+    showToast('🗑️ Riwayat dihapus','warn');
+  }
+
+  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   let toastTimer;
-  function showToast(msg, type = '') {
+  function showToast(msg,type='') {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.className = 'toast show' + (type ? ' ' + type : '');
+    t.className = 'toast show'+(type?' '+type:'');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.className = 'toast', 3000);
+    toastTimer = setTimeout(()=>t.className='toast',3000);
   }
 
   loadData();
