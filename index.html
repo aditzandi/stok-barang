@@ -22,7 +22,7 @@
     --muted: #94a3b8;
     --sub: #64748b;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
@@ -62,15 +62,9 @@
     font-weight: 600;
   }
 
-  .sync-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #a5f3c0;
-  }
-
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #a5f3c0; }
   .sync-dot.loading { background: #fde68a; animation: pulse 1s infinite; }
   .sync-dot.error { background: #fca5a5; }
-
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
   .summary {
@@ -91,17 +85,13 @@
   }
 
   .sum-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .sum-val { font-size: 20px; font-weight: 800; margin-top: 4px; color: var(--text); }
+  .sum-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
   .sum-val.green { color: var(--green); }
   .sum-val.accent { color: var(--accent); }
 
   .section-title {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-    padding: 20px 20px 10px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--muted); padding: 20px 20px 10px;
   }
 
   .items { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -117,152 +107,85 @@
 
   .item-card:focus-within { border-color: var(--accent); }
 
-  .item-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
+  .item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .item-name-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
 
   .item-num {
     width: 28px; height: 28px;
-    background: var(--accent-light);
-    color: var(--accent);
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    background: var(--accent-light); color: var(--accent);
+    border-radius: 8px; font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
 
   .item-name {
-    font-size: 15px;
-    font-weight: 700;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text);
-    width: 100%;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    caret-color: var(--accent);
+    font-size: 15px; font-weight: 700; border: none; outline: none;
+    background: transparent; color: var(--text); width: 100%;
+    font-family: 'Plus Jakarta Sans', sans-serif; caret-color: var(--accent);
   }
 
   .item-name::placeholder { color: var(--muted); font-weight: 500; }
-
   .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .inp-group { display: flex; flex-direction: column; gap: 5px; }
 
   .inp-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--muted);
-    padding-left: 2px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--muted); padding-left: 2px;
   }
 
   .inp-wrap {
-    display: flex;
-    align-items: center;
-    background: var(--bg);
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    overflow: hidden;
-    transition: border-color 0.2s;
+    display: flex; align-items: center;
+    background: var(--bg); border-radius: 12px;
+    border: 1.5px solid var(--border); overflow: hidden; transition: border-color 0.2s;
   }
 
   .inp-wrap:focus-within { border-color: var(--accent); background: var(--accent-light); }
 
   .inp-prefix {
-    padding: 0 8px 0 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    user-select: none;
+    padding: 0 8px 0 12px; font-size: 13px; font-weight: 600;
+    color: var(--muted); user-select: none;
   }
 
   .inp-wrap input {
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 11px 12px 11px 0;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    width: 100%;
-    -moz-appearance: textfield;
+    border: none; outline: none; background: transparent;
+    padding: 11px 12px 11px 0; font-size: 15px; font-weight: 700;
+    color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+    width: 100%; -moz-appearance: textfield;
   }
 
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
   .stok-wrap {
-    display: flex;
-    align-items: center;
-    background: var(--bg);
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    overflow: hidden;
-    transition: border-color 0.2s;
+    display: flex; align-items: center; background: var(--bg);
+    border-radius: 12px; border: 1.5px solid var(--border);
+    overflow: hidden; transition: border-color 0.2s;
   }
 
   .stok-wrap:focus-within { border-color: var(--accent); }
 
   .stok-btn {
-    background: transparent;
-    border: none;
-    padding: 11px 14px;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--sub);
-    cursor: pointer;
-    transition: background 0.15s;
-    line-height: 1;
-    user-select: none;
+    background: transparent; border: none; padding: 11px 14px;
+    font-size: 18px; font-weight: 700; color: var(--sub);
+    cursor: pointer; line-height: 1; user-select: none;
   }
 
   .stok-btn:active { background: var(--border); }
 
   .stok-wrap input {
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 11px 0;
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    width: 100%;
-    text-align: center;
-    -moz-appearance: textfield;
+    border: none; outline: none; background: transparent;
+    padding: 11px 0; font-size: 16px; font-weight: 800;
+    color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+    width: 100%; text-align: center; -moz-appearance: textfield;
   }
 
   .item-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
   }
 
-  .badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-
+  .badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
   .badge-green { background: var(--green-light); color: var(--green); }
   .badge-orange { background: var(--orange-light); color: var(--orange); }
   .badge-red { background: var(--red-light); color: var(--red); }
@@ -273,45 +196,26 @@
   .save-wrap { padding: 20px 16px 0; display: flex; flex-direction: column; gap: 10px; }
 
   .btn-save {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 800;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+    width: 100%; background: var(--accent); color: #fff; border: none;
+    border-radius: 16px; padding: 16px; font-size: 16px; font-weight: 800;
+    font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
     box-shadow: 0 4px 16px rgba(99,102,241,0.35);
   }
 
   .btn-save:active { transform: scale(0.98); }
   .btn-save:disabled { opacity: 0.6; }
 
-  .last-saved {
-    text-align: center;
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 500;
-  }
+  .last-saved { text-align: center; font-size: 12px; color: var(--muted); font-weight: 500; }
 
   .toast {
-    position: fixed;
-    bottom: 24px;
+    position: fixed; bottom: 24px;
     left: 50%; transform: translateX(-50%) translateY(80px);
-    background: #1e293b;
-    color: #fff;
-    padding: 12px 22px;
-    border-radius: 99px;
-    font-size: 13px;
-    font-weight: 600;
+    color: #fff; padding: 12px 22px; border-radius: 99px;
+    font-size: 13px; font-weight: 600;
     box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    opacity: 0;
-    transition: transform 0.3s, opacity 0.3s;
-    white-space: nowrap;
-    z-index: 999;
+    opacity: 0; transition: transform 0.3s, opacity 0.3s;
+    white-space: nowrap; z-index: 999; background: #1e293b;
   }
 
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -323,7 +227,7 @@
 
 <div class="topbar">
   <h1>📦 Stok Barang</h1>
-  <p>Tersinkron dengan GitHub Gist</p>
+  <p>Tersinkron dengan cloud</p>
   <div class="sync-status">
     <div class="sync-dot loading" id="syncDot"></div>
     <span id="syncText">Memuat data...</span>
@@ -345,16 +249,17 @@
 <div class="items" id="itemList"></div>
 
 <div class="save-wrap">
-  <button class="btn-save" id="btnSave" onclick="simpan()" disabled>💾 Simpan ke GitHub</button>
+  <button class="btn-save" id="btnSave" onclick="simpan()" disabled>💾 Simpan</button>
   <div class="last-saved" id="lastSaved"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const GIST_ID = '27a18d6eadf44aae344834595e23706e';
-  const TOKEN = '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';
-  const FILE = 'stok.json';
+  const BIN_ID = '69cfabec856a682189f73bed';
+  const MASTER_KEY = '$2a$10$1oYDHBq/NG4lryEQR0tmPeICB9AUm1hcmwh8GyAL1OGEcZmTJBCv6';
+  const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
   const DEFAULTS = [
     'Beras 5kg', 'Minyak Goreng', 'Gula Pasir', 'Tepung Terigu', 'Kopi Sachet'
   ];
@@ -384,29 +289,25 @@
     txt.textContent = text;
   }
 
-  async function loadFromGist() {
+  async function loadData() {
     setSyncStatus('loading', 'Memuat data...');
     try {
-      const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-        headers: {
-          'Authorization': `token ${TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
+      const res = await fetch(API_URL + '/latest', {
+        headers: { 'X-Master-Key': MASTER_KEY }
       });
-      if (!res.ok) throw new Error('Gagal load');
-      const gist = await res.json();
-      const content = gist.files[FILE]?.content || '{}';
-      const parsed = JSON.parse(content);
+      if (!res.ok) throw new Error('Gagal');
+      const json = await res.json();
+      const record = json.record;
 
-      if (parsed.items && Array.isArray(parsed.items)) {
-        data = parsed.items;
+      if (record.items && record.items.length > 0) {
+        data = record.items;
       } else {
         data = DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
       }
 
-      const lastSave = parsed.lastSaved;
-      if (lastSave) {
-        document.getElementById('lastSaved').textContent = 'Terakhir disimpan: ' + new Date(lastSave).toLocaleString('id-ID');
+      if (record.lastSaved) {
+        document.getElementById('lastSaved').textContent =
+          'Terakhir disimpan: ' + new Date(record.lastSaved).toLocaleString('id-ID');
       }
 
       setSyncStatus('ok', 'Tersinkron ✓');
@@ -414,10 +315,9 @@
       render();
     } catch (e) {
       setSyncStatus('error', 'Gagal memuat, pakai data lokal');
-      const local = localStorage.getItem('stokku_hp');
+      const local = localStorage.getItem('stokku_jsonbin');
       if (local) {
-        const parsed = JSON.parse(local);
-        data = parsed.items || DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
+        data = JSON.parse(local).items || DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
       } else {
         data = DEFAULTS.map((nama, i) => ({ id: i, nama, harga: 0, stok: 0 }));
       }
@@ -432,42 +332,32 @@
     btn.textContent = '⏳ Menyimpan...';
     setSyncStatus('loading', 'Menyimpan...');
 
-    const payload = {
-      items: data,
-      lastSaved: new Date().toISOString()
-    };
-
-    // Simpan lokal juga sebagai backup
-    localStorage.setItem('stokku_hp', JSON.stringify(payload));
+    const payload = { items: data, lastSaved: new Date().toISOString() };
+    localStorage.setItem('stokku_jsonbin', JSON.stringify(payload));
 
     try {
-      const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-        method: 'PATCH',
+      const res = await fetch(API_URL, {
+        method: 'PUT',
         headers: {
-          'Authorization': `token ${TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Master-Key': MASTER_KEY
         },
-        body: JSON.stringify({
-          files: {
-            [FILE]: { content: JSON.stringify(payload, null, 2) }
-          }
-        })
+        body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error('Gagal simpan');
+      if (!res.ok) throw new Error('Gagal');
 
       setSyncStatus('ok', 'Tersinkron ✓');
-      const now = new Date().toLocaleString('id-ID');
-      document.getElementById('lastSaved').textContent = 'Terakhir disimpan: ' + now;
-      showToast('✅ Berhasil disimpan ke GitHub!', 'success');
+      document.getElementById('lastSaved').textContent =
+        'Terakhir disimpan: ' + new Date().toLocaleString('id-ID');
+      showToast('✅ Berhasil disimpan!', 'success');
     } catch (e) {
-      setSyncStatus('error', 'Gagal simpan ke GitHub');
-      showToast('⚠️ Gagal ke GitHub, tersimpan lokal', 'error');
+      setSyncStatus('error', 'Gagal simpan ke cloud');
+      showToast('⚠️ Gagal ke cloud, tersimpan lokal', 'error');
     }
 
     btn.disabled = false;
-    btn.textContent = '💾 Simpan ke GitHub';
+    btn.textContent = '💾 Simpan';
   }
 
   function render() {
@@ -477,7 +367,6 @@
     data.forEach((item, i) => {
       const s = statusInfo(item.stok);
       const nilai = item.harga * item.stok;
-
       const card = document.createElement('div');
       card.className = 'item-card';
       card.innerHTML = `
@@ -562,8 +451,7 @@
     toastTimer = setTimeout(() => t.className = 'toast', 3000);
   }
 
-  // Load data dari Gist saat buka
-  loadFromGist();
+  loadData();
 </script>
 </body>
 </html>
