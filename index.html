@@ -159,6 +159,12 @@
   .btn-simpan-nama { width:100%; background:var(--accent); color:#fff; border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; margin-top:4px; box-shadow:0 4px 16px rgba(99,102,241,0.3); transition:transform 0.1s; }
   .btn-simpan-nama:active { transform:scale(0.98); }
 
+  /* TAMBAH PRODUK */
+  .btn-tambah-produk { width:100%; background:var(--green); color:#fff; border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; margin-top:4px; box-shadow:0 4px 16px rgba(16,185,129,0.3); transition:transform 0.1s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-tambah-produk:active { transform:scale(0.98); }
+  .btn-hapus-produk { width:28px; height:28px; background:var(--red-light); color:var(--red); border:none; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s; }
+  .btn-hapus-produk:active { background:var(--red); color:#fff; }
+
   /* RESET SECTION */
   .reset-section { padding:0 16px; margin-top:8px; }
   .reset-card { background:var(--white); border-radius:20px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1.5px solid var(--red-light); }
@@ -245,6 +251,9 @@
   <div class="section-title">Edit Nama Barang</div>
   <div class="setting-section" id="editList"></div>
   <div style="padding:16px 16px 0">
+    <button class="btn-tambah-produk" onclick="tambahProduk()">➕ Tambah Produk Baru</button>
+  </div>
+  <div style="padding:8px 16px 0">
     <button class="btn-simpan-nama" onclick="simpanNama()">💾 Simpan Nama Barang</button>
   </div>
 
@@ -459,7 +468,7 @@
             <div class="inp-label">Harga Jual</div>
             <div class="inp-wrap">
               <span class="inp-prefix">Rp</span>
-              <input type="number" inputmode="numeric" placeholder="0" value="${item.harga||''}"
+              <input type="number" inputmode="numeric" placeholder="0" value="${item.harga!=null&&item.harga!==''?item.harga:''}"
                 oninput="data[${i}].harga=parseFloat(this.value)||0;updateCard(${i})">
             </div>
           </div>
@@ -467,7 +476,7 @@
             <div class="inp-label">Stok</div>
             <div class="stok-wrap">
               <button class="stok-btn" onclick="chgStok(${i},-1)">−</button>
-              <input type="number" inputmode="numeric" placeholder="0" id="si${i}" value="${item.stok||''}"
+              <input type="number" inputmode="numeric" placeholder="0" id="si${i}" value="${item.stok!=null&&item.stok!==''?item.stok:''}"
                 oninput="data[${i}].stok=parseInt(this.value)||0;updateCard(${i})">
               <button class="stok-btn" onclick="chgStok(${i},1)">＋</button>
             </div>
@@ -661,7 +670,8 @@
       card.innerHTML = `
         <div class="edit-card-header">
           <div class="edit-num">${i+1}</div>
-          <div style="font-size:14px;font-weight:700;color:var(--sub)">${esc(item.nama) || 'Barang '+(i+1)}</div>
+          <div style="font-size:14px;font-weight:700;color:var(--sub);flex:1">${esc(item.nama) || 'Barang '+(i+1)}</div>
+          <button class="btn-hapus-produk" onclick="konfirmasiHapusProduk(${i})" title="Hapus produk ini">✕</button>
         </div>
         <div class="edit-fields">
           <div class="edit-field">
@@ -675,6 +685,35 @@
         </div>`;
       editList.appendChild(card);
     });
+  }
+
+  function tambahProduk() {
+    const newId = Date.now();
+    data.push({ id:newId, nama:'Produk Baru', sub:'', harga:0, stok:0 });
+    jualQty.push(0);
+    simpanSilent();
+    render();
+    renderEditNama();
+    // scroll ke bawah agar user lihat produk baru
+    setTimeout(() => {
+      const editList = document.getElementById('editList');
+      editList.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'center' });
+      const lastIdx = data.length - 1;
+      document.getElementById('editNama'+lastIdx)?.focus();
+      document.getElementById('editNama'+lastIdx)?.select();
+    }, 100);
+    showToast('➕ Produk baru ditambahkan!','success');
+  }
+
+  function konfirmasiHapusProduk(i) {
+    resetMode = 'hapus-produk-'+i;
+    document.getElementById('modalIcon').textContent = '🗑️';
+    document.getElementById('modalTitle').textContent = 'Hapus Produk?';
+    document.getElementById('modalDesc').textContent = `"${data[i].nama || 'Produk '+(i+1)}" akan dihapus permanen dari daftar.`;
+    const btn = document.getElementById('btnModalConfirm');
+    btn.textContent = 'Ya, Hapus';
+    btn.className = 'btn-modal-confirm red';
+    document.getElementById('modalOverlay').classList.add('show');
   }
 
   function simpanNama() {
@@ -720,21 +759,35 @@
 
   async function eksekusiReset() {
     tutupModal();
-    if (resetMode==='stok') {
+    if (resetMode.startsWith('hapus-produk-')) {
+      const i = parseInt(resetMode.split('-')[2]);
+      data.splice(i, 1);
+      jualQty.splice(i, 1);
+      await simpanSilent();
+      render();
+      renderEditNama();
+      showToast('🗑️ Produk dihapus!','warn');
+    } else if (resetMode==='stok') {
       data = data.map(d => ({...d, harga:0, stok:0}));
       showToast('🔄 Stok & harga di-reset!','warn');
+      jualQty = data.map(()=>0);
+      await simpanSilent();
+      render();
+      renderEditNama();
+      updateJualSummary();
+      updateSummary();
     } else if (resetMode==='semua') {
       data = DEFAULTS.map((d,i) => ({id:i, nama:d.nama, sub:'', harga:0, stok:0}));
       riwayat = [];
       filterBulan = 'semua';
       showToast('🗑️ Semua data dihapus!','warn');
+      jualQty = data.map(()=>0);
+      await simpanSilent();
+      render();
+      renderEditNama();
+      updateJualSummary();
+      updateSummary();
     }
-    jualQty = data.map(()=>0);
-    await simpanSilent();
-    render();
-    renderEditNama();
-    updateJualSummary();
-    updateSummary();
   }
 
   loadData();
