@@ -265,9 +265,7 @@
       <div class="reset-title">⚠️ Zona Berbahaya</div>
       <div class="reset-desc">Pilih reset yang ingin dilakukan. Tindakan ini tidak bisa dibatalkan.</div>
       <div class="reset-options">
-        <button class="btn-reset stok-only" onclick="konfirmasiReset('stok')">🔄 Reset Stok & Harga Jadi 0</button>
         <button class="btn-reset riwayat-only" onclick="konfirmasiReset('riwayat')">📋 Hapus Riwayat Penjualan Saja</button>
-        <button class="btn-reset all-data" onclick="konfirmasiReset('semua')">🗑️ Hapus Semua Data & Riwayat</button>
       </div>
     </div>
   </div>
@@ -767,41 +765,23 @@
   }
 
   async function eksekusiReset() {
+    const mode = resetMode;
     tutupModal();
-    if (resetMode.startsWith('hapus-produk-')) {
-      const i = parseInt(resetMode.split('-')[2]);
+    if (mode.startsWith("hapus-produk-")) {
+      const i = parseInt(mode.split("-")[2]);
       data.splice(i, 1);
       jualQty.splice(i, 1);
       await simpanSilent();
       render();
       renderEditNama();
-      showToast('🗑️ Produk dihapus!','warn');
-    } else if (resetMode==='riwayat') {
+      showToast("🗑️ Produk dihapus!","warn");
+    } else if (mode==="riwayat") {
       riwayat = [];
-      filterBulan = 'semua';
-      showToast('📋 Riwayat penjualan dihapus!','warn');
+      filterBulan = "semua";
       await simpanSilent();
       renderRiwayat();
-    } else if (resetMode==='stok') {
-      data = data.map(d => ({...d, harga:0, stok:0}));
-      showToast('🔄 Stok & harga di-reset!','warn');
-      jualQty = data.map(()=>0);
-      await simpanSilent();
-      render();
-      renderEditNama();
       updateJualSummary();
-      updateSummary();
-    } else if (resetMode==='semua') {
-      data = DEFAULTS.map((d,i) => ({id:i, nama:d.nama, sub:'', harga:0, stok:0}));
-      riwayat = [];
-      filterBulan = 'semua';
-      showToast('🗑️ Semua data dihapus!','warn');
-      jualQty = data.map(()=>0);
-      await simpanSilent();
-      render();
-      renderEditNama();
-      updateJualSummary();
-      updateSummary();
+      showToast("📋 Riwayat penjualan dihapus!","warn");
     }
   }
 
