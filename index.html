@@ -174,6 +174,7 @@
   .btn-reset { width:100%; border:none; border-radius:12px; padding:13px; font-size:14px; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:transform 0.1s, opacity 0.2s; }
   .btn-reset:active { transform:scale(0.98); }
   .btn-reset.stok-only { background:var(--orange-light); color:var(--orange); }
+  .btn-reset.riwayat-only { background:var(--accent-light); color:var(--accent); }
   .btn-reset.all-data { background:var(--red-light); color:var(--red); }
 
   /* MODAL KONFIRMASI */
@@ -187,6 +188,7 @@
   .btn-modal-cancel { flex:1; background:var(--bg); border:1.5px solid var(--border); border-radius:14px; padding:14px; font-size:15px; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; color:var(--sub); cursor:pointer; }
   .btn-modal-confirm { flex:1; border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; color:#fff; cursor:pointer; }
   .btn-modal-confirm.orange { background:var(--orange); }
+  .btn-modal-confirm.accent { background:var(--accent); }
   .btn-modal-confirm.red { background:var(--red); }
 
   /* TOAST */
@@ -264,6 +266,7 @@
       <div class="reset-desc">Pilih reset yang ingin dilakukan. Tindakan ini tidak bisa dibatalkan.</div>
       <div class="reset-options">
         <button class="btn-reset stok-only" onclick="konfirmasiReset('stok')">🔄 Reset Stok & Harga Jadi 0</button>
+        <button class="btn-reset riwayat-only" onclick="konfirmasiReset('riwayat')">📋 Hapus Riwayat Penjualan Saja</button>
         <button class="btn-reset all-data" onclick="konfirmasiReset('semua')">🗑️ Hapus Semua Data & Riwayat</button>
       </div>
     </div>
@@ -742,6 +745,12 @@
       desc.textContent = 'Semua stok dan harga akan menjadi 0. Nama barang dan riwayat tetap tersimpan.';
       btnConfirm.textContent = 'Ya, Reset Stok';
       btnConfirm.className = 'btn-modal-confirm orange';
+    } else if (mode==='riwayat') {
+      document.getElementById('modalIcon').textContent = '📋';
+      title.textContent = 'Hapus Riwayat Penjualan?';
+      desc.textContent = 'Semua histori penjualan akan dihapus permanen. Nama barang, harga, dan stok tetap aman.';
+      btnConfirm.textContent = 'Ya, Hapus Riwayat';
+      btnConfirm.className = 'btn-modal-confirm accent';
     } else {
       document.getElementById('modalIcon').textContent = '🗑️';
       title.textContent = 'Hapus Semua Data?';
@@ -767,6 +776,12 @@
       render();
       renderEditNama();
       showToast('🗑️ Produk dihapus!','warn');
+    } else if (resetMode==='riwayat') {
+      riwayat = [];
+      filterBulan = 'semua';
+      showToast('📋 Riwayat penjualan dihapus!','warn');
+      await simpanSilent();
+      renderRiwayat();
     } else if (resetMode==='stok') {
       data = data.map(d => ({...d, harga:0, stok:0}));
       showToast('🔄 Stok & harga di-reset!','warn');
