@@ -62,19 +62,19 @@
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--white); border-top: 1px solid var(--border);
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
     z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
   }
 
   .nav-btn {
     display: flex; flex-direction: column; align-items: center;
-    padding: 12px 8px 16px; border: none; background: transparent;
+    padding: 10px 8px 14px; border: none; background: transparent;
     cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
     color: var(--muted); font-size: 11px; font-weight: 600;
-    transition: color 0.2s; gap: 4px;
+    transition: color 0.2s; gap: 3px;
   }
 
-  .nav-btn .nav-icon { font-size: 22px; }
+  .nav-btn .nav-icon { font-size: 20px; }
   .nav-btn.active { color: var(--accent); }
 
   .page { display: none; }
@@ -101,6 +101,7 @@
   .section-title {
     font-size: 12px; font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; color: var(--muted); padding: 20px 20px 10px;
+    display: flex; align-items: center; justify-content: space-between;
   }
 
   .items { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -160,7 +161,7 @@
 
   .stok-wrap {
     display: flex; align-items: center; background: var(--bg);
-    border-radius: 12px; border: 1.5px solid var(--border); overflow: hidden; transition: border-color 0.2s;
+    border-radius: 12px; border: 1.5px solid var(--border); overflow: hidden;
   }
 
   .stok-wrap:focus-within { border-color: var(--accent); }
@@ -248,7 +249,6 @@
   }
 
   .jual-btn:active { background: var(--border); }
-
   .jual-qty { min-width: 36px; text-align: center; font-size: 16px; font-weight: 800; }
 
   .btn-catat {
@@ -260,31 +260,75 @@
   }
 
   .btn-catat:active { transform: scale(0.98); }
+  .btn-catat:disabled { opacity: 0.6; }
 
-  .riwayat-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+  /* RIWAYAT PAGE */
+  .filter-bar {
+    padding: 0 16px 4px;
+    display: flex; gap: 8px; overflow-x: auto;
+    scrollbar-width: none;
+  }
 
-  .riwayat-item {
-    background: var(--white); border-radius: 14px; padding: 12px 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    white-space: nowrap;
+    padding: 7px 14px; border-radius: 99px;
+    font-size: 12px; font-weight: 700;
+    border: 1.5px solid var(--border);
+    background: var(--white); color: var(--sub);
+    cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+
+  .filter-chip.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+
+  .tanggal-group { padding: 0 16px; margin-bottom: 4px; }
+
+  .tanggal-header {
+    background: var(--white); border-radius: 14px; padding: 12px 16px;
+    margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    cursor: pointer; user-select: none;
+  }
+
+  .tanggal-header-row {
     display: flex; align-items: center; justify-content: space-between;
   }
 
-  .riwayat-nama { font-size: 14px; font-weight: 700; }
-  .riwayat-waktu { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .riwayat-qty { font-size: 13px; font-weight: 700; color: var(--red); text-align: right; }
-  .riwayat-total { font-size: 12px; color: var(--green); font-weight: 700; margin-top: 2px; text-align: right; }
+  .tanggal-label { font-size: 14px; font-weight: 800; color: var(--text); }
+  .tanggal-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .tanggal-omzet { font-size: 14px; font-weight: 800; color: var(--green); }
+  .chevron { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
 
-  .empty-riwayat { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
-  .empty-riwayat .icon { font-size: 36px; margin-bottom: 8px; }
+  .transaksi-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; overflow: hidden; }
+  .transaksi-list.collapsed { display: none; }
 
-  .btn-reset {
-    margin: 12px 16px 0; width: calc(100% - 32px);
-    background: transparent; color: var(--red);
-    border: 1.5px solid var(--red-light); border-radius: 12px;
-    padding: 12px; font-size: 13px; font-weight: 700;
-    font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
+  .trx-item {
+    background: var(--bg); border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; justify-content: space-between;
   }
 
+  .trx-nama { font-size: 13px; font-weight: 700; }
+  .trx-waktu { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .trx-qty { font-size: 12px; font-weight: 700; color: var(--red); text-align: right; }
+  .trx-total { font-size: 12px; color: var(--green); font-weight: 700; text-align: right; margin-top: 1px; }
+
+  .empty-state {
+    text-align: center; padding: 40px 16px;
+    color: var(--muted); font-size: 14px;
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+
+  .riwayat-summary {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; padding: 0 16px;
+    margin-top: -4px; position: relative; z-index: 1;
+  }
+
+  /* TOAST */
   .toast {
     position: fixed; bottom: 80px;
     left: 50%; transform: translateX(-50%) translateY(80px);
@@ -312,7 +356,7 @@
   </div>
 </div>
 
-<!-- PAGE STOK -->
+<!-- PAGE: STOK -->
 <div class="page active" id="pageStok">
   <div class="summary">
     <div class="sum-card">
@@ -332,15 +376,15 @@
   </div>
 </div>
 
-<!-- PAGE PENJUALAN -->
+<!-- PAGE: PENJUALAN -->
 <div class="page" id="pageJual">
   <div class="jual-summary">
     <div class="jual-sum-card">
-      <div class="jual-sum-label">Terjual</div>
+      <div class="jual-sum-label">Terjual Hari Ini</div>
       <div class="jual-sum-val accent" id="jualTotal">0</div>
     </div>
     <div class="jual-sum-card">
-      <div class="jual-sum-label">Omzet</div>
+      <div class="jual-sum-label">Omzet Hari Ini</div>
       <div class="jual-sum-val green" id="jualOmzet">Rp0</div>
     </div>
     <div class="jual-sum-card">
@@ -350,11 +394,29 @@
   </div>
   <div class="section-title">Pilih Barang</div>
   <div class="barang-list" id="barangList"></div>
-  <button class="btn-catat" onclick="catatPenjualan()">✅ Catat Penjualan</button>
-  <div class="section-title" style="margin-top:8px">Riwayat Hari Ini</div>
-  <div class="riwayat-list" id="riwayatList"></div>
-  <div id="emptyRiwayat" class="empty-riwayat"><div class="icon">🧾</div><p>Belum ada transaksi</p></div>
-  <button class="btn-reset" id="btnReset" onclick="resetRiwayat()" style="display:none">🗑️ Hapus Riwayat Hari Ini</button>
+  <button class="btn-catat" id="btnCatat" onclick="catatPenjualan()">✅ Catat Penjualan</button>
+</div>
+
+<!-- PAGE: RIWAYAT -->
+<div class="page" id="pageRiwayat">
+  <div class="riwayat-summary">
+    <div class="sum-card">
+      <div class="sum-label">Total Omzet</div>
+      <div class="sum-val green" id="rwOmzet">—</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Transaksi</div>
+      <div class="sum-val accent" id="rwTrx">—</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="padding-bottom:12px">
+    <span>Filter Bulan</span>
+  </div>
+  <div class="filter-bar" id="filterBar"></div>
+
+  <div class="section-title" style="margin-top:4px">Riwayat Penjualan</div>
+  <div id="riwayatKonten"></div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -363,7 +425,10 @@
     <span class="nav-icon">📦</span><span>Stok</span>
   </button>
   <button class="nav-btn" id="navJual" onclick="showPage('jual')">
-    <span class="nav-icon">🛒</span><span>Penjualan</span>
+    <span class="nav-icon">🛒</span><span>Jual</span>
+  </button>
+  <button class="nav-btn" id="navRiwayat" onclick="showPage('riwayat')">
+    <span class="nav-icon">📋</span><span>Riwayat</span>
   </button>
 </div>
 
@@ -375,27 +440,12 @@
   const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
   const DEFAULTS = ['Beras 5kg','Minyak Goreng','Gula Pasir','Tepung Terigu','Kopi Sachet'];
 
-  let data = [];
+  let data = [];       // stok barang
+  let riwayat = [];    // semua riwayat transaksi [{tanggal, waktu, nama, qty, harga, total}]
   let jualQty = [];
+  let filterBulan = 'semua';
 
-  // Riwayat - reset tiap hari baru
-  const hariIni = new Date().toDateString();
-  if (localStorage.getItem('riwayat_tgl') !== hariIni) {
-    localStorage.setItem('riwayat_jual', '[]');
-    localStorage.setItem('riwayat_tgl', hariIni);
-  }
-  let riwayat = JSON.parse(localStorage.getItem('riwayat_jual') || '[]');
-
-  function showPage(p) {
-    document.getElementById('pageStok').classList.toggle('active', p==='stok');
-    document.getElementById('pageJual').classList.toggle('active', p==='jual');
-    document.getElementById('navStok').classList.toggle('active', p==='stok');
-    document.getElementById('navJual').classList.toggle('active', p==='jual');
-    document.getElementById('topTitle').textContent = p==='stok' ? '📦 Stok Barang' : '🛒 Penjualan';
-    document.getElementById('topSub').textContent = p==='stok' ? 'Input harga & stok' : 'Catat transaksi harian';
-    if (p==='jual') renderJual();
-  }
-
+  // ========== UTILS ==========
   function fmtRp(n) {
     if (n>=1000000) return 'Rp'+(n/1000000).toFixed(1).replace('.0','')+'jt';
     if (n>=1000) return 'Rp'+(n/1000).toFixed(0)+'rb';
@@ -403,6 +453,27 @@
   }
 
   function fmtRpFull(n) { return 'Rp'+Number(n).toLocaleString('id-ID'); }
+
+  function fmtTanggal(tgl) {
+    // tgl format: "2025-04-03"
+    const [y,m,d] = tgl.split('-');
+    const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    return `${parseInt(d)} ${bulan[parseInt(m)-1]} ${y}`;
+  }
+
+  function fmtBulanLabel(key) {
+    // key: "2025-04"
+    const [y,m] = key.split('-');
+    const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    return `${bulan[parseInt(m)-1]} ${y}`;
+  }
+
+  function getTanggalHariIni() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+
+  function getBulanKey(tgl) { return tgl.substring(0,7); }
 
   function statusInfo(s) {
     if (s===0) return {label:'❌ Habis',cls:'badge-red',dot:'#ef4444'};
@@ -415,6 +486,33 @@
     document.getElementById('syncText').textContent = text;
   }
 
+  function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  let toastTimer;
+  function showToast(msg,type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show'+(type?' '+type:'');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.className='toast',3000);
+  }
+
+  // ========== NAVIGASI ==========
+  function showPage(p) {
+    ['stok','jual','riwayat'].forEach(pg => {
+      document.getElementById('page'+pg.charAt(0).toUpperCase()+pg.slice(1)).classList.toggle('active', p===pg);
+      document.getElementById('nav'+pg.charAt(0).toUpperCase()+pg.slice(1)).classList.toggle('active', p===pg);
+    });
+    const titles = { stok:['📦 Stok Barang','Input harga & stok'], jual:['🛒 Penjualan','Catat transaksi'], riwayat:['📋 Riwayat','Histori penjualan'] };
+    document.getElementById('topTitle').textContent = titles[p][0];
+    document.getElementById('topSub').textContent = titles[p][1];
+    if (p==='jual') renderJual();
+    if (p==='riwayat') renderRiwayat();
+  }
+
+  // ========== LOAD DATA ==========
   async function loadData() {
     setSyncStatus('loading','Memuat data...');
     try {
@@ -423,25 +521,39 @@
       const json = await res.json();
       const r = json.record;
       data = (r.items && r.items.length>0) ? r.items : DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
-      if (r.lastSaved) document.getElementById('lastSaved').textContent = 'Terakhir disimpan: '+new Date(r.lastSaved).toLocaleString('id-ID');
+      riwayat = r.riwayat || [];
+      if (r.lastSaved) document.getElementById('lastSaved').textContent = 'Tersimpan: '+new Date(r.lastSaved).toLocaleString('id-ID');
       setSyncStatus('ok','Tersinkron ✓');
       document.getElementById('btnSave').disabled = false;
     } catch(e) {
       setSyncStatus('error','Pakai data lokal');
-      const loc = localStorage.getItem('stokku_jsonbin');
-      data = loc ? (JSON.parse(loc).items || DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}))) : DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
+      const loc = localStorage.getItem('stokku_db');
+      if (loc) {
+        const parsed = JSON.parse(loc);
+        data = parsed.items || DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
+        riwayat = parsed.riwayat || [];
+      } else {
+        data = DEFAULTS.map((n,i)=>({id:i,nama:n,harga:0,stok:0}));
+        riwayat = [];
+      }
       document.getElementById('btnSave').disabled = false;
     }
     jualQty = data.map(()=>0);
     render();
+    updateJualSummary();
+  }
+
+  // ========== SIMPAN ==========
+  function buildPayload() {
+    return { items: data, riwayat: riwayat, lastSaved: new Date().toISOString() };
   }
 
   async function simpan() {
     const btn = document.getElementById('btnSave');
     btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
     setSyncStatus('loading','Menyimpan...');
-    const payload = {items:data, lastSaved:new Date().toISOString()};
-    localStorage.setItem('stokku_jsonbin', JSON.stringify(payload));
+    const payload = buildPayload();
+    localStorage.setItem('stokku_db', JSON.stringify(payload));
     try {
       const res = await fetch(API_URL, {
         method:'PUT',
@@ -450,7 +562,7 @@
       });
       if (!res.ok) throw new Error();
       setSyncStatus('ok','Tersinkron ✓');
-      document.getElementById('lastSaved').textContent = 'Terakhir disimpan: '+new Date().toLocaleString('id-ID');
+      document.getElementById('lastSaved').textContent = 'Tersimpan: '+new Date().toLocaleString('id-ID');
       showToast('✅ Berhasil disimpan!','success');
     } catch(e) {
       setSyncStatus('error','Gagal simpan');
@@ -460,8 +572,8 @@
   }
 
   async function simpanSilent() {
-    const payload = {items:data, lastSaved:new Date().toISOString()};
-    localStorage.setItem('stokku_jsonbin', JSON.stringify(payload));
+    const payload = buildPayload();
+    localStorage.setItem('stokku_db', JSON.stringify(payload));
     try {
       await fetch(API_URL, {
         method:'PUT',
@@ -472,7 +584,7 @@
     } catch(e) { setSyncStatus('error','Gagal sinkron'); }
   }
 
-  // ===== STOK =====
+  // ========== STOK ==========
   function render() {
     const list = document.getElementById('itemList');
     list.innerHTML = '';
@@ -540,7 +652,7 @@
     document.getElementById('sumNilai').textContent = fmtRpFull(data.reduce((s,b)=>s+(b.harga||0)*(b.stok||0),0));
   }
 
-  // ===== PENJUALAN =====
+  // ========== PENJUALAN ==========
   function renderJual() {
     const list = document.getElementById('barangList');
     list.innerHTML = '';
@@ -562,7 +674,7 @@
         </div>`;
       list.appendChild(row);
     });
-    renderRiwayat();
+    updateJualSummary();
   }
 
   function chgJual(i,delta) {
@@ -571,68 +683,150 @@
     if (el) el.textContent = jualQty[i];
   }
 
+  function updateJualSummary() {
+    const tgl = getTanggalHariIni();
+    const hari = riwayat.filter(r => r.tanggal === tgl);
+    document.getElementById('jualTotal').textContent = hari.reduce((s,r)=>s+r.qty,0);
+    document.getElementById('jualOmzet').textContent = fmtRp(hari.reduce((s,r)=>s+r.total,0));
+    document.getElementById('jualTrx').textContent = hari.length;
+  }
+
   function catatPenjualan() {
     if (!jualQty.some(q=>q>0)) { showToast('⚠️ Pilih barang dulu!','warn'); return; }
-    const waktu = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+
+    const btn = document.getElementById('btnCatat');
+    btn.disabled = true;
+
+    const tgl = getTanggalHariIni();
+    const now = new Date();
+    const waktu = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+
     jualQty.forEach((qty,i) => {
       if (qty>0) {
         data[i].stok = Math.max(0, data[i].stok - qty);
-        riwayat.unshift({ nama:data[i].nama, qty, harga:data[i].harga, total:qty*data[i].harga, waktu });
+        riwayat.unshift({
+          tanggal: tgl,
+          waktu,
+          nama: data[i].nama,
+          qty,
+          harga: data[i].harga,
+          total: qty * data[i].harga
+        });
       }
     });
+
     jualQty = data.map(()=>0);
-    localStorage.setItem('riwayat_jual', JSON.stringify(riwayat));
-    simpanSilent();
+    simpanSilent().then(()=>{ btn.disabled = false; });
     renderJual();
     updateSummary();
+    updateJualSummary();
     showToast('✅ Penjualan dicatat!','success');
   }
 
+  // ========== RIWAYAT ==========
   function renderRiwayat() {
-    const list = document.getElementById('riwayatList');
-    const empty = document.getElementById('emptyRiwayat');
-    const btn = document.getElementById('btnReset');
-    list.innerHTML = '';
-    const totalTerjual = riwayat.reduce((s,r)=>s+r.qty,0);
-    const totalOmzet = riwayat.reduce((s,r)=>s+r.total,0);
-    document.getElementById('jualTotal').textContent = totalTerjual;
-    document.getElementById('jualOmzet').textContent = fmtRp(totalOmzet);
-    document.getElementById('jualTrx').textContent = riwayat.length;
-    if (riwayat.length===0) { empty.style.display='block'; btn.style.display='none'; return; }
-    empty.style.display='none'; btn.style.display='block';
-    riwayat.forEach(r => {
-      const div = document.createElement('div');
-      div.className = 'riwayat-item';
-      div.innerHTML = `
-        <div>
-          <div class="riwayat-nama">${esc(r.nama)}</div>
-          <div class="riwayat-waktu">🕐 ${r.waktu}</div>
-        </div>
-        <div>
-          <div class="riwayat-qty">−${r.qty} pcs</div>
-          <div class="riwayat-total">+${fmtRp(r.total)}</div>
-        </div>`;
-      list.appendChild(div);
+    // Buat daftar bulan unik
+    const bulanSet = new Set(riwayat.map(r => getBulanKey(r.tanggal)));
+    const bulanList = Array.from(bulanSet).sort().reverse();
+
+    // Filter bar
+    const filterBar = document.getElementById('filterBar');
+    filterBar.innerHTML = '';
+
+    const allChip = document.createElement('button');
+    allChip.className = 'filter-chip'+(filterBulan==='semua'?' active':'');
+    allChip.textContent = 'Semua';
+    allChip.onclick = () => { filterBulan='semua'; renderRiwayat(); };
+    filterBar.appendChild(allChip);
+
+    bulanList.forEach(key => {
+      const chip = document.createElement('button');
+      chip.className = 'filter-chip'+(filterBulan===key?' active':'');
+      chip.textContent = fmtBulanLabel(key);
+      chip.onclick = () => { filterBulan=key; renderRiwayat(); };
+      filterBar.appendChild(chip);
     });
-  }
 
-  function resetRiwayat() {
-    if (!confirm('Hapus semua riwayat hari ini?')) return;
-    riwayat = [];
-    localStorage.setItem('riwayat_jual','[]');
-    renderRiwayat();
-    showToast('🗑️ Riwayat dihapus','warn');
-  }
+    // Filter data
+    const filtered = filterBulan==='semua' ? riwayat : riwayat.filter(r => getBulanKey(r.tanggal)===filterBulan);
 
-  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    // Summary
+    document.getElementById('rwOmzet').textContent = fmtRpFull(filtered.reduce((s,r)=>s+r.total,0));
+    document.getElementById('rwTrx').textContent = filtered.length;
 
-  let toastTimer;
-  function showToast(msg,type='') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show'+(type?' '+type:'');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>t.className='toast',3000);
+    // Group by tanggal
+    const grouped = {};
+    filtered.forEach(r => {
+      if (!grouped[r.tanggal]) grouped[r.tanggal] = [];
+      grouped[r.tanggal].push(r);
+    });
+
+    const tanggalList = Object.keys(grouped).sort().reverse();
+    const konten = document.getElementById('riwayatKonten');
+    konten.innerHTML = '';
+
+    if (tanggalList.length === 0) {
+      konten.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>Belum ada riwayat penjualan</p></div>`;
+      return;
+    }
+
+    tanggalList.forEach((tgl, idx) => {
+      const trxs = grouped[tgl];
+      const omzetHari = trxs.reduce((s,r)=>s+r.total,0);
+      const tglLabel = fmtTanggal(tgl);
+      const isToday = tgl === getTanggalHariIni();
+
+      const group = document.createElement('div');
+      group.className = 'tanggal-group';
+
+      const header = document.createElement('div');
+      header.className = 'tanggal-header';
+
+      const chevronId = 'chev'+idx;
+      const listId = 'tlist'+idx;
+
+      header.innerHTML = `
+        <div class="tanggal-header-row">
+          <div>
+            <div class="tanggal-label">${tglLabel}${isToday?' <span style="font-size:10px;background:#eef2ff;color:#6366f1;padding:2px 8px;border-radius:99px;font-weight:700">Hari Ini</span>':''}</div>
+            <div class="tanggal-sub">${trxs.length} transaksi · ${trxs.reduce((s,r)=>s+r.qty,0)} item</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="tanggal-omzet">${fmtRp(omzetHari)}</div>
+            <div class="chevron open" id="${chevronId}">▼</div>
+          </div>
+        </div>`;
+
+      const list = document.createElement('div');
+      list.className = 'transaksi-list';
+      list.id = listId;
+
+      trxs.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'trx-item';
+        item.innerHTML = `
+          <div>
+            <div class="trx-nama">${esc(r.nama)}</div>
+            <div class="trx-waktu">🕐 ${r.waktu}</div>
+          </div>
+          <div>
+            <div class="trx-qty">−${r.qty} pcs</div>
+            <div class="trx-total">+${fmtRp(r.total)}</div>
+          </div>`;
+        list.appendChild(item);
+      });
+
+      header.onclick = () => {
+        const l = document.getElementById(listId);
+        const c = document.getElementById(chevronId);
+        l.classList.toggle('collapsed');
+        c.classList.toggle('open');
+      };
+
+      group.appendChild(header);
+      group.appendChild(list);
+      konten.appendChild(group);
+    });
   }
 
   loadData();
