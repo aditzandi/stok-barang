@@ -59,8 +59,8 @@
             <div class="flex items-center space-x-3">
                 <!-- Status Sync Indicator Badge -->
                 <div id="cloudStatusBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="cloudStatusText">Mode Lokal</span>
+                    <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="cloudStatusText">Menghubungkan...</span>
                 </div>
 
                 <div class="flex items-center bg-slate-100 dark:bg-slate-700 p-1 rounded-lg border border-slate-200 dark:border-slate-600">
@@ -358,13 +358,25 @@
         <span id="toastMsg">Pesan Notifikasi</span>
     </div>
 
-    <!-- Firebase Online Cloud Storage Script -->
+    <!-- Firebase / Firestore Cloud Storage Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'wifi-billing-app';
+        // =========================================================================
+        // Konfigurasi Firebase project: billing-wifi-ed788
+        // =========================================================================
+        const myFirebaseConfig = {
+            apiKey: "AIzaSyAUuAF-oNlti4N5WDp6O6RjWnNlQN_E-uE",
+            authDomain: "billing-wifi-ed788.firebaseapp.com",
+            projectId: "billing-wifi-ed788",
+            storageBucket: "billing-wifi-ed788.firebasestorage.app",
+            messagingSenderId: "818455377089",
+            appId: "1:818455377089:web:00f8a036e439da5d321040",
+            measurementId: "G-RHYC8BSYZH"
+        };
+
         let db = null;
         let auth = null;
         let currentUser = null;
@@ -372,99 +384,103 @@
 
         async function initCloudDatabase() {
             try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    const app = initializeApp(firebaseConfig);
+                if (myFirebaseConfig && myFirebaseConfig.apiKey) {
+                    const app = initializeApp(myFirebaseConfig);
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        const credential = await signInWithCustomToken(auth, __initial_auth_token);
-                        currentUser = credential.user;
-                    } else {
-                        const credential = await signInAnonymously(auth);
-                        currentUser = credential.user;
-                    }
+                    const credential = await signInAnonymously(auth);
+                    currentUser = credential.user;
 
                     window.firebaseDb = db;
                     window.firebaseUser = currentUser;
 
-                    updateCloudBadge(true, "Cloud Online");
+                    updateCloudBadge(true, "Cloud Online (Firestore)");
                     listenCloudData();
                 } else {
                     updateCloudBadge(false, "Mode Lokal");
                 }
             } catch (err) {
-                console.warn("Firebase fallback to LocalStorage:", err);
-                updateCloudBadge(false, "Mode Lokal");
+                console.warn("Firebase Offline / Sync fallback to LocalStorage:", err);
+                updateCloudBadge(false, "Mode Lokal (Gagal Terhubung)");
             }
         }
 
         function updateCloudBadge(isOnline, text) {
             const badge = document.getElementById('cloudStatusBadge');
             const statusText = document.getElementById('cloudStatusText');
+            const dot = document.getElementById('cloudStatusDot');
             if (badge && statusText) {
                 statusText.innerText = text;
                 if (isOnline) {
                     badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800";
+                    if(dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 } else {
                     badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800";
+                    if(dot) dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-pulse";
                 }
             }
         }
 
         function listenCloudData() {
             if (!db || !currentUser) return;
-            const periodKey = window.currentPeriod.replace(/\s+/g, '_');
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'wifi_billing', periodKey);
+            const periodKey = (window.currentPeriod || 'Agustus 2026').replace(/\s+/g, '_');
+            const docRef = doc(db, 'wifi_billing', periodKey);
 
             if (unsubscribeFirestore) unsubscribeFirestore();
 
             unsubscribeFirestore = onSnapshot(docRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.data();
-                    if (data && data.customers) {
+                    if (data && Array.isArray(data.customers)) {
                         window.customersData = data.customers;
-                        if (typeof customersData !== 'undefined') {
-                            customersData = data.customers;
-                        }
                         localStorage.setItem(`wifi_billing_${window.currentPeriod}`, JSON.stringify(data.customers));
                         if (window.renderTable) window.renderTable();
                         if (window.updateStats) window.updateStats();
                     }
-                } else {
+                } else if (Array.isArray(window.customersData) && window.customersData.length > 0) {
+                    // Dokumen periode ini belum ada di Firestore, kirim data lokal awal sebagai seed
                     window.savePeriodDataCloud();
                 }
             }, (error) => {
                 console.error("Firestore error:", error);
+                updateCloudBadge(false, "Mode Lokal (Error Firestore)");
             });
         }
 
         window.savePeriodDataCloud = async function() {
             if (!db || !currentUser) {
-                localStorage.setItem(`wifi_billing_${window.currentPeriod}`, JSON.stringify(window.customersData));
+                localStorage.setItem(`wifi_billing_${window.currentPeriod}`, JSON.stringify(window.customersData || []));
                 return;
             }
             try {
-                const periodKey = window.currentPeriod.replace(/\s+/g, '_');
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'wifi_billing', periodKey);
+                const periodKey = (window.currentPeriod || 'Agustus 2026').replace(/\s+/g, '_');
+                const docRef = doc(db, 'wifi_billing', periodKey);
                 await setDoc(docRef, {
                     period: window.currentPeriod,
-                    customers: window.customersData,
+                    customers: window.customersData || [],
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
             } catch (err) {
                 console.error("Error saving to Cloud:", err);
-                localStorage.setItem(`wifi_billing_${window.currentPeriod}`, JSON.stringify(window.customersData));
+                localStorage.setItem(`wifi_billing_${window.currentPeriod}`, JSON.stringify(window.customersData || []));
+            }
+        };
+
+        // Simpan tarif paket juga ke Firestore (koleksi settings) agar tersinkron di semua perangkat
+        window.savePriceRatesCloud = async function(rates) {
+            localStorage.setItem('wifi_price_rates', JSON.stringify(rates));
+            if (!db || !currentUser) return;
+            try {
+                const docRef = doc(db, 'wifi_billing_settings', 'price_rates');
+                await setDoc(docRef, { rates, updatedAt: new Date().toISOString() }, { merge: true });
+            } catch (err) {
+                console.error("Error saving price rates to Cloud:", err);
             }
         };
 
         window.initCloudDatabase = initCloudDatabase;
         window.listenCloudData = listenCloudData;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initCloudDatabase();
-        });
     </script>
 
     <!-- Main Application Logic Script -->
@@ -530,6 +546,11 @@
             loadPeriodData();
             renderTable();
             updateStats();
+            // Baru hubungkan ke Firestore SETELAH data lokal siap,
+            // supaya listener tidak menimpa data dengan array kosong/undefined.
+            if (window.initCloudDatabase) {
+                window.initCloudDatabase();
+            }
         };
 
         function initMonthSelector() {
@@ -566,7 +587,7 @@
             const saved = localStorage.getItem(`wifi_billing_${currentPeriod}`);
             if (saved) {
                 customersData = JSON.parse(saved);
-                // Otomatis ubah status Mbak Lina jika di penyimpanan lama masih Non-Aktif
+                // Pastikan Mbak Lina selalu berstatus "Belum Bayar" jika sebelumnya masih "Non-Aktif"
                 const lina = customersData.find(c => c.name.toLowerCase().includes("lina"));
                 if (lina && lina.status === "Non-Aktif") {
                     lina.status = "Belum Bayar";
@@ -706,7 +727,6 @@
             document.getElementById('statUnpaidCount').innerText = unpaidCount;
         }
 
-        // Action Functions
         function togglePaymentStatus(id) {
             const customer = customersData.find(c => c.id === id);
             if (customer) {
@@ -795,7 +815,6 @@
             document.getElementById('customerModal').classList.add('hidden');
         }
 
-        // Custom Delete Modal Handlers
         function confirmDeleteCustomer(id) {
             deleteTargetId = id;
             const customer = customersData.find(c => c.id === id);
@@ -823,7 +842,6 @@
             }
         }
 
-        // WhatsApp Reminder Generator
         function sendWA(id) {
             const customer = customersData.find(c => c.id === id);
             if (!customer) return;
@@ -848,7 +866,6 @@
             window.open(waUrl, '_blank');
         }
 
-        // Receipt Generator
         function openReceiptModal(id) {
             const customer = customersData.find(c => c.id === id);
             if (!customer) return;
@@ -869,7 +886,6 @@
             document.getElementById('receiptModal').classList.add('hidden');
         }
 
-        // Price Settings Functions
         function openPriceSettings() {
             document.getElementById('rate5M').value = priceRates["5M"] || 80000;
             document.getElementById('rate8M').value = priceRates["8M"] || 100000;
@@ -891,7 +907,11 @@
             priceRates["15M"] = Number(document.getElementById('rate15M').value);
             priceRates["50M"] = Number(document.getElementById('rate50M').value);
 
-            localStorage.setItem('wifi_price_rates', JSON.stringify(priceRates));
+            if (window.savePriceRatesCloud) {
+                window.savePriceRatesCloud(priceRates);
+            } else {
+                localStorage.setItem('wifi_price_rates', JSON.stringify(priceRates));
+            }
             showToast("Tarif paket berhasil disimpan!");
             closePriceSettings();
             renderTable();
@@ -901,6 +921,7 @@
         function resetToDefaultData() {
             localStorage.removeItem(`wifi_billing_${currentPeriod}`);
             loadPeriodData();
+            savePeriodData();
             renderTable();
             updateStats();
             closePriceSettings();
@@ -938,7 +959,7 @@
             }, 3000);
         }
 
-        // Expose functions globally for UI handlers
+        // Expose functions globally
         window.renderTable = renderTable;
         window.updateStats = updateStats;
         window.changePeriod = changePeriod;
